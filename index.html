@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinyl Music Player</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>    <div id="app">
+        <!-- Compact Controls -->        <div class="controls">
+            <button id="login-btn" class="btn primary">🎵 Connect</button>
+            <div id="user-info" class="user-info hidden">
+                <button id="logout-btn" class="btn logout">🚪 Logout</button>
+                <div class="status-indicator"></div>
+            </div>
+            <button id="minimize-btn" class="btn minimize">−</button>
+            <button id="close-btn" class="btn close">×</button>
+        </div><!-- Main Player Area -->
+        <main class="player-container">
+            <!-- Vinyl Player -->
+            <div class="vinyl-player">
+                <!-- Turntable Base -->
+                <div class="turntable">
+                    <!-- Vinyl Record -->
+                    <div class="vinyl-record" id="vinyl-record">
+                        <div class="record-label">
+                            <div class="album-art" id="album-art">
+                                <div class="default-art">🎵</div>
+                            </div>
+                        </div>
+                        <div class="record-grooves"></div>
+                    </div>
+                    
+                    <!-- Tonearm -->
+                    <div class="tonearm-base">
+                        <div class="tonearm" id="tonearm">
+                            <div class="tonearm-head">
+                                <div class="needle"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                <!-- Minimal Track Info -->
+                <div class="track-info" id="track-info">
+                    <div class="track-title">Click needle to play</div>
+                    <div class="track-artist"></div>
+                </div>
+            </div>        </main>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

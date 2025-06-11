@@ -1,0 +1,40 @@
+{
+  "name": "vinyl-music-player",
+  "version": "1.0.0",
+  "description": "A vintage vinyl record music player using Spotify API",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "pack": "electron-builder --dir"
+  },
+  "keywords": [
+    "music",
+    "player",
+    "vinyl",
+    "spotify",
+    "electron"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "electron-media-service": "^0.2.2",
+    "spotify-web-api-node": "^5.0.2"
+  },
+  "build": {
+    "appId": "com.yourname.vinyl-music-player",
+    "productName": "Vinyl Music Player",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/**/*"
+    ]
+  }
+}

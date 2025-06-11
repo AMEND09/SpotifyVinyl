@@ -1,0 +1,383 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #ffffff;
+    overflow: hidden;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Compact Controls */
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    margin: 5px;
+    border-radius: 10px;
+    -webkit-app-region: drag; /* Make the controls area draggable */
+    position: relative;
+}
+
+.controls > * {
+    -webkit-app-region: no-drag; /* Allow buttons to be clickable */
+}
+
+.btn {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.btn.primary {
+    background: linear-gradient(45deg, #1DB954, #1ed760);
+    color: white;
+}
+
+.btn.primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+}
+
+.btn.minimize {
+    background: rgba(255, 193, 7, 0.8);
+    color: white;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+    border-radius: 50%;
+}
+
+.btn.minimize:hover {
+    background: rgba(255, 193, 7, 1);
+    transform: scale(1.1);
+}
+
+.btn.close {
+    background: rgba(255, 107, 107, 0.8);
+    color: white;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+    border-radius: 50%;
+}
+
+.btn.close:hover {
+    background: rgba(255, 107, 107, 1);
+    transform: scale(1.1);
+}
+
+.btn.logout {
+    background: rgba(255, 165, 0, 0.8);
+    color: white;
+    padding: 0.3rem 0.6rem;
+    font-size: 12px;
+    border-radius: 15px;
+}
+
+.btn.logout:hover {
+    background: rgba(255, 165, 0, 1);
+    transform: translateY(-1px);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    background: #1DB954;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Main Player Container */
+.player-container {
+    flex: 1;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Vinyl Player Styles */
+.vinyl-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.turntable {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%);
+    border-radius: 50%;
+    box-shadow: 
+        0 0 15px rgba(0, 0, 0, 0.5),
+        inset 0 0 10px rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.vinyl-record {
+    width: 200px;
+    height: 200px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.vinyl-record.spinning {
+    animation: spin 3s linear infinite;
+}
+
+.record-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background: #8B4513;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.album-art {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.album-art img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.default-art {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.record-grooves {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    background: repeating-conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(255, 255, 255, 0.1) 1deg,
+        transparent 2deg
+    );
+}
+
+/* Tonearm Styles */
+.tonearm-base {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 12px;
+    height: 12px;
+    background: #8B4513;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.tonearm {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    height: 3px;
+    background: linear-gradient(90deg, #8B4513, #CD853F);
+    transform-origin: 0 50%;
+    transform: translate(0, -50%) rotate(70deg); /* Paused position - 90 degrees clockwise from -20deg */
+    border-radius: 2px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 10;
+}
+
+.tonearm:hover {
+    transform: translate(0, -50%) rotate(75deg);
+}
+
+.tonearm.on-record {
+    transform: translate(0, -50%) rotate(100deg); /* Playing position - 90 degrees clockwise from 10deg */
+}
+
+.tonearm-head {
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 10px;
+    background: #2a2a2a;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.needle {
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 4px;
+    background: #ff6b6b;
+    border-radius: 1px;
+}
+
+/* Track Info */
+.track-info {
+    text-align: center;
+    max-width: 250px;
+    padding: 0.5rem;
+}
+
+.track-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist {
+    font-size: 0.75rem;
+    color: #1DB954;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Animations */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .turntable {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .vinyl-record {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .tonearm {
+        width: 150px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .player-container {
+        padding: 1rem;
+    }
+    
+    .turntable {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .vinyl-record {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+/* Responsive adjustments for smaller window */
+@media (max-height: 500px) {
+    .turntable {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .vinyl-record {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .tonearm {
+        width: 100px;
+    }
+    
+    .track-info {
+        padding: 0.3rem;
+    }
+}
