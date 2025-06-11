@@ -83,12 +83,11 @@ function createWindow() {
   const pngIconPath = path.join(__dirname, 'assets', 'icon.png');
   const icoIconPath = path.join(__dirname, 'assets', 'icon.ico');
   const iconPath = fs.existsSync(pngIconPath) ? pngIconPath : icoIconPath;
-  
-  mainWindow = new BrowserWindow({
-    width: 380,
-    height: 450,
-    minWidth: 320,
-    minHeight: 400,
+    mainWindow = new BrowserWindow({
+    width: 320,
+    height: 380,
+    minWidth: 280,
+    minHeight: 320,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -573,6 +572,32 @@ ipcMain.handle('update-media-metadata', async (event, metadata) => {
   } catch (err) {
     console.error('Error updating media metadata:', err);
     return { success: false, error: err.message };  }
+});
+
+ipcMain.handle('get-playback-state', async () => {
+  try {
+    const data = await spotifyApi.getMyCurrentPlaybackState();
+    if (data.body && data.body.is_playing) {
+      return {
+        success: true,
+        is_playing: data.body.is_playing,
+        progress_ms: data.body.progress_ms,
+        item: data.body.item,
+        duration_ms: data.body.item ? data.body.item.duration_ms : 0
+      };
+    } else {
+      return {
+        success: true,
+        is_playing: false,
+        progress_ms: 0,
+        item: null,
+        duration_ms: 0
+      };
+    }
+  } catch (err) {
+    console.error('Error getting playback state:', err);
+    return { success: false, error: err.message || 'Failed to get playback state' };
+  }
 });
 
 ipcMain.handle('clear-tokens', async () => {

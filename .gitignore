@@ -69,3 +69,4 @@ jspm_packages/
 # Local configuration files
 config.json
 credentials.json
+config.js

@@ -13,10 +13,11 @@ body {
     min-height: 100vh;
     margin: 0;
     padding: 0;
+    height: 100vh;
 }
 
 #app {
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -26,11 +27,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    padding: 8px;
+    gap: 0.3rem;
+    padding: 6px;
     background: rgba(0, 0, 0, 0.3);
-    margin: 5px;
-    border-radius: 10px;
+    margin: 3px;
+    border-radius: 8px;
     -webkit-app-region: drag; /* Make the controls area draggable */
     position: relative;
 }
@@ -40,13 +41,13 @@ body {
 }
 
 .btn {
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.6rem;
     border: none;
-    border-radius: 20px;
+    border-radius: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .btn.primary {
@@ -125,7 +126,7 @@ body {
 /* Main Player Container */
 .player-container {
     flex: 1;
-    padding: 10px;
+    padding: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -136,32 +137,32 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
 }
 
 .turntable {
     position: relative;
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     background: radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%);
     border-radius: 50%;
     box-shadow: 
-        0 0 15px rgba(0, 0, 0, 0.5),
-        inset 0 0 10px rgba(255, 255, 255, 0.1);
+        0 0 12px rgba(0, 0, 0, 0.5),
+        inset 0 0 8px rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .vinyl-record {
-    width: 200px;
-    height: 200px;
+    width: 160px;
+    height: 160px;
     background: #1a1a1a;
     border-radius: 50%;
     position: relative;
     cursor: pointer;
     transition: transform 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.5);
 }
 
 .vinyl-record.spinning {
@@ -173,19 +174,19 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80px;
-    height: 80px;
+    width: 65px;
+    height: 65px;
     background: #8B4513;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .album-art {
-    width: 65px;
-    height: 65px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     overflow: hidden;
     background: #333;
@@ -223,27 +224,27 @@ body {
 /* Tonearm Styles */
 .tonearm-base {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 12px;
-    height: 12px;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
     background: #8B4513;
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .tonearm {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 120px;
-    height: 3px;
+    width: 95px;
+    height: 2.5px;
     background: linear-gradient(90deg, #8B4513, #CD853F);
     transform-origin: 0 50%;
-    transform: translate(0, -50%) rotate(70deg); /* Paused position - 90 degrees clockwise from -20deg */
+    transform: translate(0, -50%) rotate(70deg); /* Paused position - lifted off record */
     border-radius: 2px;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease; /* Smooth transition for all needle movements */
     z-index: 10;
 }
 
@@ -251,20 +252,18 @@ body {
     transform: translate(0, -50%) rotate(75deg);
 }
 
-.tonearm.on-record {
-    transform: translate(0, -50%) rotate(100deg); /* Playing position - 90 degrees clockwise from 10deg */
-}
+/* .on-record class removed - needle position now handled dynamically by JavaScript */
 
 .tonearm-head {
     position: absolute;
-    right: -5px;
+    right: -4px;
     top: 50%;
     transform: translateY(-50%);
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     background: #2a2a2a;
     border-radius: 50%;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .needle {
@@ -281,14 +280,14 @@ body {
 /* Track Info */
 .track-info {
     text-align: center;
-    max-width: 250px;
-    padding: 0.5rem;
+    max-width: 200px;
+    padding: 0.3rem;
 }
 
 .track-title {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.1rem;
     color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
@@ -296,7 +295,7 @@ body {
 }
 
 .track-artist {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #1DB954;
     white-space: nowrap;
     overflow: hidden;

@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {  spotifyLogin: () => ipcRenderer.invoke('spotify-login'),
   getCurrentTrack: () => ipcRenderer.invoke('get-current-track'),
+  getPlaybackState: () => ipcRenderer.invoke('get-playback-state'),
   playTrack: (trackUri) => ipcRenderer.invoke('play-track', trackUri),
   pauseTrack: () => ipcRenderer.invoke('pause-track'),
   clearTokens: () => ipcRenderer.invoke('clear-tokens'),

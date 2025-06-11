@@ -1,14 +1,18 @@
-class VinylPlayer {    constructor() {
+class VinylPlayer {
+    constructor() {
         this.isAuthenticated = false;
         this.currentTrack = null;
         this.isPlaying = false;
         this.checkInterval = null;
+        this.progressInterval = null; // New interval for progress tracking
         this.hasSpotifyPremium = null; // null = unknown, true = has premium, false = no premium
         this.mediaServiceStarted = false;
+        this.currentProgress = 0; // Current progress in milliseconds
+        this.trackDuration = 0; // Track duration in milliseconds
         
         this.initializeElements();
         this.bindEvents();
-    }    initializeElements() {
+    }initializeElements() {
         this.loginBtn = document.getElementById('login-btn');
         this.logoutBtn = document.getElementById('logout-btn');
         this.userInfo = document.getElementById('user-info');
@@ -79,14 +83,20 @@ class VinylPlayer {    constructor() {
         this.loginBtn.textContent = 'Connect to Spotify';
         this.loginBtn.disabled = false;
         this.showNotification(`Authentication failed: ${error}`, 'error');
-    }
-
-    startCheckingCurrentTrack() {
+    }    startCheckingCurrentTrack() {
         // Check for current track every 2 seconds
         this.checkInterval = setInterval(async () => {
             await this.updateCurrentTrack();
         }, 2000);
-          // Initial check
+        
+        // Check for playback progress every 500ms for smooth needle movement
+        this.progressInterval = setInterval(async () => {
+            if (this.isPlaying) {
+                await this.updatePlaybackProgress();
+            }
+        }, 500);
+        
+        // Initial check
         this.updateCurrentTrack();
     }
 
@@ -117,8 +127,46 @@ class VinylPlayer {    constructor() {
     handleMediaServicePlayPause() {
         console.log('Media service play/pause event received');
         this.showNotification('⏯️ System play/pause command received', 'info');
-    }async updateCurrentTrack() {
+    }    async updatePlaybackProgress() {
         try {
+            const playbackData = await window.electronAPI.getPlaybackState();
+            if (playbackData.success && playbackData.is_playing) {
+                this.currentProgress = playbackData.progress_ms;
+                this.trackDuration = playbackData.duration_ms;
+                this.updateNeedlePosition();
+            }
+        } catch (error) {
+            console.error('Failed to get playback progress:', error);
+        }
+    }    updateNeedlePosition() {
+        if (!this.isPlaying || this.trackDuration === 0) {
+            return;
+        }
+
+        // Calculate progress percentage (0 to 1)
+        const progressPercent = Math.min(this.currentProgress / this.trackDuration, 1);
+        
+        // Realistic turntable needle movement: from outer edge to center
+        // Start at 95deg (outer edge of vinyl) and end at 110deg (near center gold circle)
+        const startAngle = 95;  // Starting position at outer edge of vinyl
+        const endAngle = 110;   // Ending position near center gold circle
+        const needleAngle = startAngle + (progressPercent * (endAngle - startAngle));
+        
+        // Apply the calculated angle to the tonearm
+        this.tonearm.style.transform = `translate(0, -50%) rotate(${needleAngle}deg)`;
+    }
+
+    animateNeedleToStart() {
+        // Animate needle back to starting position (outer edge) for new song
+        // This creates a realistic turntable effect
+        this.tonearm.style.transition = 'transform 0.8s ease-out';
+        this.tonearm.style.transform = 'translate(0, -50%) rotate(95deg)';
+        
+        // Reset transition after animation for smooth progress movement
+        setTimeout(() => {
+            this.tonearm.style.transition = 'transform 0.5s ease';
+        }, 800);
+    }async updateCurrentTrack() {        try {
             const trackData = await window.electronAPI.getCurrentTrack();
             if (trackData && trackData.item) {
                 const newTrack = trackData.item;
@@ -126,8 +174,16 @@ class VinylPlayer {    constructor() {
                 
                 // Update current track if different
                 if (!this.currentTrack || this.currentTrack.id !== newTrack.id) {
+                    const isNewSong = this.currentTrack && this.currentTrack.id !== newTrack.id;
                     this.currentTrack = newTrack;
+                    this.trackDuration = newTrack.duration_ms;
+                    this.currentProgress = 0; // Reset progress for new song
                     this.updateTrackDisplay();
+                    
+                    // If it's a new song and currently playing, animate needle to start position
+                    if (isNewSong && wasPlaying) {
+                        this.animateNeedleToStart();
+                    }
                 }
                 
                 // Update playing state
@@ -137,7 +193,7 @@ class VinylPlayer {    constructor() {
         } catch (error) {
             console.error('Failed to get current track:', error);
         }
-    }    updateTrackDisplay() {
+    }updateTrackDisplay() {
         if (!this.currentTrack) {
             this.trackInfo.querySelector('.track-title').textContent = 'Click needle to play';
             this.trackInfo.querySelector('.track-artist').textContent = 'Connect to Spotify';
@@ -161,17 +217,19 @@ class VinylPlayer {    constructor() {
         } else {
             this.albumArt.innerHTML = '<div class="default-art">🎵</div>';
         }
-    }
-
-    updatePlayingState() {
+    }    updatePlayingState() {
         if (this.isPlaying) {
             this.vinylRecord.classList.add('spinning');
-            this.tonearm.classList.add('on-record');
+            // When starting to play, set needle to start position if no progress yet
+            if (this.currentProgress === 0) {
+                this.tonearm.style.transform = 'translate(0, -50%) rotate(95deg)';
+            }
         } else {
             this.vinylRecord.classList.remove('spinning');
-            this.tonearm.classList.remove('on-record');
+            // Reset needle to paused position (70deg - lifted off record)
+            this.tonearm.style.transform = 'translate(0, -50%) rotate(70deg)';
         }
-    }    async togglePlayback() {
+    }async togglePlayback() {
         if (!this.isAuthenticated) {
             this.showNotification('Connect to Spotify first', 'warning');
             return;
@@ -213,11 +271,17 @@ class VinylPlayer {    constructor() {
             this.isAuthenticated = false;
             this.currentTrack = null;
             this.hasSpotifyPremium = null;
+            this.currentProgress = 0;
+            this.trackDuration = 0;
             
-            // Stop checking for current track
+            // Stop checking for current track and progress
             if (this.checkInterval) {
                 clearInterval(this.checkInterval);
                 this.checkInterval = null;
+            }
+            if (this.progressInterval) {
+                clearInterval(this.progressInterval);
+                this.progressInterval = null;
             }
             
             // Reset UI
@@ -230,6 +294,9 @@ class VinylPlayer {    constructor() {
             this.vinylRecord.classList.remove('spinning');
             this.tonearm.classList.remove('on-record');
             this.isPlaying = false;
+            
+            // Reset needle to paused position
+            this.tonearm.style.transform = 'translate(0, -50%) rotate(70deg)';
             
             // Reset track display
             this.trackInfo.querySelector('.track-title').textContent = 'Click needle to play';
